@@ -247,11 +247,15 @@ for (let i = 0; i < seeds.length; i++) {
 
     for (let j = 0; j < mapArray.length; j++) {
         let map = mapArray[j];
+
+        let skipped = false;
         map.forEach((value, key) => {
-            if (key[0] <= seed && seed <= key[1]) {
-                let difference = seed - key[0];
-                seed = value[0] + difference;
-                return;
+            if (!skipped) {
+                if (key[0] <= seed && seed <= key[1]) {
+                    let difference = seed - key[0];
+                    seed = value[0] + difference;
+                    skipped = true;
+                }
             }
         });
     } 
