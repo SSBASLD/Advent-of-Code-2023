@@ -43,6 +43,8 @@ for (let j = 0; j < arrayArray.length; j++) {
 
 let min = Infinity;
 for (let i = 0; i < seeds.length; i++) {
+    console.log("not infinite");
+
     let string = seeds[i];
 
     let seed = [];
@@ -57,6 +59,8 @@ for (let i = 0; i < seeds.length; i++) {
     seed[1] = numbers[0] + numbers[1] - 1;
 
     let seedRanges = [seed];
+
+    let tested = false;
     let matched = [];
     for (let j = 0; j < mapArray.length; j++) {
         let map = mapArray[j];
@@ -69,27 +73,35 @@ for (let i = 0; i < seeds.length; i++) {
             let upperMapRange = key[1];
 
             for (let k = 0; k < seedRanges.length; k++) {
-                console.log("a");
 
                 let seedRange = seedRanges[k];
-                let upperSeedRange = seedRange[0];
-                let lowerSeedRange = seedRange[1];
+                let upperSeedRange = seedRange[1];
+                let lowerSeedRange = seedRange[0];
 
-                if (upperSeedRange > upperMapRange && lowerSeedRange <= lowerMapRange) {
-                    console.log("b");
+                if (lowerSeedRange >= lowerMapRange && lowerSeedRange <= upperMapRange && lowerMapRange <= upperSeedRange && upperSeedRange <= upperMapRange) {
+                    seedRanges.splice(k, 1);
+                    
+                    let upperDifference = upperMapRange - upperSeedRange;
+                    let lowerDifference = lowerSeedRange - lowerMapRange;
+
+                    let match = [lowerConvertRange + lowerDifference, upperConvertRange - upperDifference];
+
+                    matched.push(match);
+                } else if (upperSeedRange > upperMapRange && lowerSeedRange <= lowerMapRange) {
 
                     seedRanges.splice(k, 1);
                     let match = [lowerConvertRange, upperConvertRange];
 
-                    let seed1 = [lowerSeedRange, lowerMapRange - 1];
-                    let seed2 = [upperMapRange + 1, upperSeedRange];
+                    let seed1 = [lowerSeedRange, lowerMapRange];
+                    let seed2 = [upperMapRange, upperSeedRange];
 
-                    seedRanges.push(seed1);
-                    seedRanges.push(seed2)
-                    
+                    seedRanges.unshift(seed2);
+                    seedRanges.unshift(seed1);
+
                     matched.push(match);
-                } else if (lowerSeedRange < lowerMapRange && upperSeedRange <= upperMapRange) {
-                    console.log("c");
+
+                    k = -1;
+                } else if (lowerSeedRange < lowerMapRange && lowerMapRange <= upperSeedRange && upperSeedRange <= upperMapRange) {
                     
                     seedRanges.splice(k, 1);
 
@@ -97,52 +109,47 @@ for (let i = 0; i < seeds.length; i++) {
                     let match = [lowerConvertRange, upperConvertRange - difference];
 
                     let seed1 = [lowerSeedRange, lowerMapRange - 1];
-
-                    seedRanges.push(seed1);
-
+                    
+                    seedRanges.unshift(seed1);
                     matched.push(match);
 
                     k = -1;
-                } else if ((lowerSeedRange > lowerMapRange && upperSeedRange > upperMapRange)) {
-                    console.log("e");
+                } else if ((lowerSeedRange > lowerMapRange && lowerSeedRange <= upperMapRange && upperSeedRange > upperMapRange)) {
 
                     seedRanges.splice(k, 1);
 
                     let difference = lowerSeedRange - lowerMapRange; 
+
                     let match = [lowerConvertRange + difference, upperConvertRange];
 
                     let seed1 = [upperMapRange + 1, upperSeedRange];
                     
-                    seedRanges.push(seed1);
+                    seedRanges.unshift(seed1);
 
                     matched.push(match);
 
                     k = -1;
-                } else if (lowerSeedRange >= lowerMapRange && upperSeedRange <= upperMapRange) {
-                    console.log("d");
-
-                    seedRanges.splice(k, 1);
-                    
-                    let upperDifference = upperMapRange - upperSeedRange;
-                    let lowerDifference = lowerSeedRange - lowerMapRange;
-
-                    let match = [lowerConvertRange + lowerDifference, upperConvertRange - upperDifference];
-                    matched.push(match);
-                } else {
-                    matched.push([lowerSeedRange, upperSeedRange]);
                 }
             }
-
-            seedRanges = [];
-            seedRanges = Array.apply(null, matched);
-            
-            matched = [];
         });
+        
+        seedRanges.forEach((seedRange) => {
+            matched.push(seedRange);
+        });
+
+        seedRanges = [];
+        seedRanges = Array.apply(null, matched);
+        
+        matched = [];
     } 
 
     for (let range of seedRanges) {
         if (range[0] < min) {
+            if (range[0] == 0) {
+                continue;
+            } else console.log(range[0]);
             min = range[0];
+            console.log(min);
         }
     }
 }
