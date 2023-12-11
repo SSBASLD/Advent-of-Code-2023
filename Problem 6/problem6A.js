@@ -13,8 +13,6 @@ for (let i = 0; i < races.length; i++) {
     let sum1 = (-b + Math.sqrt(Math.pow(b, 2) - 4 * a * c))/(2*a);
     let sum2 = (-b - Math.sqrt(Math.pow(b, 2) - 4 * a * c))/(2*a);
 
-    console.log((-b + Math.sqrt(Math.pow(b, 2) - 4 * a * c))/(2*a));
-
     let lowerBound = Math.ceil(sum1);
     let upperBound = Math.floor(sum2);
 
