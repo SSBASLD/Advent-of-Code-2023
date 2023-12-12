@@ -999,6 +999,13 @@ A5A55 707
 A33J3 675
 5T694 609`;
 
+function getKeyByValue(map, searchValue) {
+    for (let [key, value] of map.entries()) {
+      if (value === searchValue)
+        return key;
+    }
+  }
+
 let inputArray = rawInput.split("\n");
 
 let hands = [];
@@ -1031,6 +1038,23 @@ for (let i = 0; i < hands.length; i++) {
         } else {
             matches.set(char, matches.get(char) + 1);
         }
+    }
+
+    let max = Math.max(...matches.values());
+    let maxKey = getKeyByValue(matches, max);
+
+    let formerMax = max;
+    if (maxKey == "J") {
+        matches.set("J", 0);
+        max = Math.max(...matches.values());
+
+        if (max < formerMax) matches.set("J", formerMax);
+        else maxKey = getKeyByValue(matches, max);
+    }
+
+    if (matches.get("J") && maxKey != "J") {
+        matches.set(maxKey, matches.get(maxKey) + matches.get("J"));
+        matches.set("J", 0);
     }
 
     let pairs = 0;
@@ -1071,7 +1095,7 @@ let cardValues = new Map([
     ["8", 7],
     ["9", 8],
     ["T", 9],
-    ["J", 10],
+    ["J", 0],
     ["Q", 11],
     ["K", 12],
     ["A", 13]
@@ -1103,6 +1127,8 @@ allCategories.forEach((array) => {
 
 let total = 0;
 sortedHands.forEach((value, index) => {
+    console.log(value);
+
     let bid = Number(value[1]);
     total += bid * (index + 1);
 })
